@@ -3,6 +3,7 @@
  *
  * Plugin Name: Raysel Woocommerce Checkout
  * Author: Youcef Bellouche
+ * Descripton: This Plugin Is For WooCommerce Product Page. It Allows To Put The Checkout Form In The Product Page
  * Author URI: https://www.facebook.com/bellou.fecuoy2000/
  * Version: 1.1.2
  */
@@ -31,8 +32,8 @@ if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 // Activation
 require_once RWC_PLUGIN_DIR . 'inc/classes/core/plugin-activation.php';
 require_once RWC_PLUGIN_DIR . 'inc/classes/core/plugin-deactivation.php';
-register_activation_hook( RWC_PLUGIN_DIR, array( Activate::class, 'activate' ) );
-register_deactivation_hook( RWC_PLUGIN_DIR, array( Deactivate::class, 'deactivate' ) );
+register_activation_hook( RWC_PLUGIN_DIR, array( Rc_Activator::class, 'activate' ) );
+register_deactivation_hook( RWC_PLUGIN_DIR, array( Rc_Deactivator::class, 'deactivate' ) );
 
 // Raysel Checkout Settings
 require_once RWC_PLUGIN_DIR . 'inc/classes/Settings/class-callbacks.php';

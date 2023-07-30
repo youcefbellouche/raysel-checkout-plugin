@@ -60,7 +60,6 @@ class Custom_Wc_Checkout extends Custom_Wc_Functions {
 			$city     = isset( $_POST['rwc-city'] ) ? sanitize_text_field( $_POST['rwc-city'] ) : '';
 			$address  = isset( $_POST['rwc-full-address'] ) ? sanitize_text_field( $_POST['rwc-full-address'] ) : '';
 			$quantity = isset( $_POST['rwc-quantity'] ) ? sanitize_text_field( $_POST['rwc-quantity'] ) : '';
-
 		if ( $settings['rwc_full_address_field'] == 'on' && $settings['rwc_full_address_field_activate'] == 'on' ) {
 			if ( ! $address ) {
 				wp_redirect( $_POST['http_referer'] . '?error=missing_field' );
@@ -94,11 +93,16 @@ class Custom_Wc_Checkout extends Custom_Wc_Functions {
 				wp_safe_redirect( $url );
 				exit;
 			} elseif ( $product->is_type( 'variable' ) ) {
+				$variations   = $product->get_variation_attributes();
 				$variation_id = isset( $_POST['variation_id'] ) ? sanitize_text_field( $_POST['variation_id'] ) : '';
 				if ( $variation_id ) {
-					$variation_product = new \WC_Product_Variation( $variation_id );
-					$order_id          = $this->create_custom_order( $args, $quantity, $variation_product );
-					$product_data      = $variation_product->get_data();
+					$variation_product = wc_get_product( $variation_id );
+					foreach ( $variations as $variation_name => $variation ) {
+						$oredr_product_attributes[ 'attribute_' . $variation_name ] = $_POST[ 'attribute_' . $variation_name ];
+					}
+					$variation_product->set_attributes( $oredr_product_attributes );
+					$order_id     = $this->create_custom_order( $args, $quantity, $variation_product );
+					$product_data = $variation_product->get_data();
 					$this->send_email( $product_data, $order_id, false );
 					$url = $this->thankyou_page_url( $order_id );
 					wp_safe_redirect( $url );

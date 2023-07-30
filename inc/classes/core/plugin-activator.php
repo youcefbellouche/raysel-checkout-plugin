@@ -5,7 +5,7 @@
  * @package rwc
  */
 
-class Activate {
+class Rc_Activator {
 
 	public function activate() {
 		add_action(

@@ -5,7 +5,7 @@
  * @package rwc
  */
 
-class Deactivate {
+class Rc_Deactivator {
 
 	public function deactivate() {
 		delete_option( 'rwc_settings' );

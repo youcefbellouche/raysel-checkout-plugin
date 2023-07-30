@@ -1,10 +1,6 @@
 <?php
 $settings = get_option( 'rwc_settings', array() );
 $product  = wc_get_product();
-if ( $product->is_type( 'variable' ) ) {
-	$variations = $product->get_variation_attributes();
-}
-
 ?>
 
 <div class="rwc-order">
@@ -14,16 +10,13 @@ if ( $product->is_type( 'variable' ) ) {
 		<input name="rwc-product-id" required type="hidden" value="<?php echo get_the_ID(); ?>">
 		<input name="rwc-name" required type="text" placeholder="الإسم واللقب *">
 		<input name="rwc-phone" required type="tel" pattern="[0-9]+" placeholder="رقم الهاتف *">
-		<?php if(! $settings["rwc_email_field_activate"] != "on") : ?> 
+		<?php if ( ! $settings['rwc_email_field_activate'] != 'on' ) : ?> 
 		<input type="email" name="rwc-email" <?php echo $settings['rwc_email_field'] ? 'required="required"' : ''; ?> placeholder="البريد الإلكتروني">
-		<?php
+			<?php
 		endif;
-		if ( $variations ) {
-			echo '<input type="hidden" name="rwc-variations" value=' . esc_attr( json_encode( $variations ) ) . '>';
-		}
 		?>
 		<div class="rwc-states"></div>
-		<?php if(! $settings["rwc_full_address_field_activate"] != "on") : ?> 
+		<?php if ( ! $settings['rwc_full_address_field_activate'] != 'on' ) : ?> 
 			<input name="rwc-full-address" type="text" placeholder="العنوان الكامل" <?php echo $settings['rwc_full_address_field'] ? 'required="required"' : ''; ?> >
 		<?php endif; ?> 
 		<input type="hidden" name="variation_id" class="variation_id" value="0" />
