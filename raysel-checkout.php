@@ -30,10 +30,11 @@ if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 
 }
 // Activation
-require_once RWC_PLUGIN_DIR . 'inc/classes/core/plugin-activation.php';
-require_once RWC_PLUGIN_DIR . 'inc/classes/core/plugin-deactivation.php';
-register_activation_hook( RWC_PLUGIN_DIR, array( Rc_Activator::class, 'activate' ) );
-register_deactivation_hook( RWC_PLUGIN_DIR, array( Rc_Deactivator::class, 'deactivate' ) );
+require_once RWC_PLUGIN_DIR . 'inc/classes/core/plugin-activator.php';
+require_once RWC_PLUGIN_DIR . 'inc/classes/core/plugin-deactivator.php';
+
+register_activation_hook( __FILE__, array(Rc_Activator::class,'rwc_activate') );
+register_deactivation_hook( __FILE__, array(Rc_Deactivator::class,'rwc_deactivate') );
 
 // Raysel Checkout Settings
 require_once RWC_PLUGIN_DIR . 'inc/classes/Settings/class-callbacks.php';

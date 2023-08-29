@@ -29,7 +29,7 @@ class Custom_Wc_Functions {
 	 * @param string $order_id
 	 * @param bool   $is_simple (optional, default = false)
 	 */
-	function send_email( $product_data, $order_id, $is_simple = true ) {
+	function send_email( $product_data, $order_id, $shipping, $is_simple = true ) {
 		$order           = new \WC_Order( $order_id );
 		$global_settings = get_option( 'rwc_settings' );
 		$global_email    = $global_settings['rwc_order_email'];
@@ -47,7 +47,7 @@ class Custom_Wc_Functions {
 <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
 	<h3 style="background:#0653a0;color:whitesmoke;padding:10px">
 		New Order !<br /><br />
-		Total Price : <?php echo $order_data['total_price']; ?> DZ</h3>
+		Total Price : <?php echo $shipping['price'] + $product_price;; ?> DZ</h3>
 	</h3>
 
 	<h3>Client Informations</h3>
@@ -67,9 +67,11 @@ class Custom_Wc_Functions {
 	<p>Product Name : <?php echo $product_data['name']; ?></p>
 	<p>Product Price : <?php echo $product_price; ?> DZ</p>
 	<p>Quantity : <?php echo $quantity; ?></p>
+	<p>Shipping method: <?php echo $shipping['method']; ?> </p>
+	<p>Shipping Price: <?php echo $shipping['price']; ?> </p>
 	
 		<?php if ( ! $is_simple ) : ?>
-	<p>
+		<p>
 			<?php
 			$attributes = explode( ',', $product_data['attribute_summary'] );
 			foreach ( $attributes as $attribute ) :
@@ -83,7 +85,6 @@ class Custom_Wc_Functions {
 			endif;
 		?>
 	<br />
-
 </div>
 
 		<?php
@@ -94,8 +95,15 @@ class Custom_Wc_Functions {
 	/**
 	 * Create Custom Order
 	 */
-	public function create_custom_order( $args, $quantity, $product ) {
+	public function create_custom_order( $args, $quantity, $product, $shipping ) {
+		$item_fee = new WC_Order_Item_Fee();
+		$item_fee->set_name( 'Shipping Method ' . $shipping['method'] );
+		$item_fee->set_amount( $shipping['price'] );
+		$item_fee->set_tax_status( 'none' );
+		$item_fee->set_total( $shipping['price'] );
+		$item_fee->calculate_taxes( $calculate_tax_for );
 		$order = wc_create_order();
+		$order->add_item( $item_fee );
 		$order->set_address( $args, 'billing' );
 		$order->set_address( $args, 'shipping' );
 		$order->add_product( $product, $quantity );
